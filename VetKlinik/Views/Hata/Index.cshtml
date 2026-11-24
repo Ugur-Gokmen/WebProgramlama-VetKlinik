@@ -1,0 +1,8 @@
+@{
+    ViewData["Title"] = "Hata";
+}
+<div class="card kart p-4 text-center">
+    <h1>@ViewBag.Kod</h1>
+    <p>@ViewBag.Mesaj</p>
+    <a class="btn btn-pati" asp-controller="Home" asp-action="Index">Ana sayfa</a>
+</div>

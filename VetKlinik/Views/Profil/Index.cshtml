@@ -1,0 +1,19 @@
+@{
+    ViewData["Title"] = "Profilim";
+    var yeni = TempData["YeniAnahtar"] as string;
+}
+<div class="card kart p-4">
+    <h1 class="h4">API anahtarı</h1>
+    <p>REST API ve MCP uçları <code>Authorization: Bearer anahtar</code> ile çalışır. Anahtarın kendisi veritabanında tutulmaz, yalnızca SHA-256 özeti saklanır.</p>
+    @if (yeni != null)
+    {
+        <div class="alert alert-success">Yeni anahtarınız (bir kez gösterilir): <strong>@yeni</strong></div>
+    }
+    else if (ViewBag.AnahtarVar == true)
+    {
+        <p>Kayıtlı bir anahtar var. Yenisini üretirseniz eskisi geçersiz olur.</p>
+    }
+    <form asp-action="AnahtarUret" method="post">
+        <button class="btn btn-pati">Anahtar üret</button>
+    </form>
+</div>

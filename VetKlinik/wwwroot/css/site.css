@@ -1,0 +1,32 @@
+:root {
+  --pati-yesil: #1f6f5b;
+  --pati-krem: #f6f1e7;
+}
+
+html { font-size: 16px; }
+body {
+  background: var(--pati-krem);
+  margin-bottom: 70px;
+  color: #243028;
+}
+
+.navbar { background: var(--pati-yesil); }
+.navbar-brand, .nav-link { color: #fff !important; }
+.footer { position: absolute; bottom: 0; width: 100%; }
+
+.hero {
+  background: linear-gradient(135deg, #1f6f5b, #3d8b74);
+  color: #fff;
+  border-radius: 1rem;
+  padding: 2.5rem;
+}
+
+.kart {
+  background: #fff;
+  border: none;
+  border-radius: 0.9rem;
+  box-shadow: 0 8px 24px rgba(31, 111, 91, 0.08);
+}
+
+.btn-pati { background: var(--pati-yesil); color: #fff; }
+.btn-pati:hover { background: #165546; color: #fff; }

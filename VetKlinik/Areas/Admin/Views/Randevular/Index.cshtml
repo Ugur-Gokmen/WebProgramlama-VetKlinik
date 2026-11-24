@@ -1,0 +1,38 @@
+@model IEnumerable<Randevu>
+@{
+    ViewData["Title"] = "Admin randevular";
+    var ozet = ViewBag.Ozet as IEnumerable<HizmetOzetDto> ?? Enumerable.Empty<HizmetOzetDto>();
+}
+<partial name="_AdminMenu" />
+<h1 class="h4">Hizmet özeti</h1>
+<table class="table bg-white mb-4">
+    <thead><tr><th>Hizmet</th><th>Adet</th><th>Ciro</th></tr></thead>
+    <tbody>
+    @foreach (var o in ozet)
+    {
+        <tr><td>@o.HizmetAdi</td><td>@o.RandevuSayisi</td><td>@o.Ciro.ToString("N0") ₺</td></tr>
+    }
+    </tbody>
+</table>
+<h2 class="h5">Tüm randevular</h2>
+<table class="table bg-white">
+    <thead><tr><th>Tarih</th><th>Hayvan</th><th>Hekim</th><th>Durum</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.Baslangic.ToString("g")</td>
+            <td>@r.EvcilHayvan.Ad</td>
+            <td>@r.Veteriner.AdSoyad</td>
+            <td>@r.Durum</td>
+            <td>
+                @if (r.Durum == RandevuDurumu.Bekliyor)
+                {
+                    <form asp-action="Onayla" asp-route-id="@r.Id" method="post" class="d-inline"><button class="btn btn-sm btn-success">Onay</button></form>
+                    <form asp-action="Reddet" asp-route-id="@r.Id" method="post" class="d-inline"><button class="btn btn-sm btn-outline-danger">Red</button></form>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,22 @@
+@model KlinikFormViewModel
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-2"><label asp-for="Ad" class="form-label"></label><input asp-for="Ad" class="form-control" /></div>
+    <div class="mb-2"><label asp-for="Adres" class="form-label"></label><input asp-for="Adres" class="form-control" /></div>
+    <div class="mb-3"><label asp-for="Telefon" class="form-label"></label><input asp-for="Telefon" class="form-control" /></div>
+    <h2 class="h6">Çalışma saatleri</h2>
+    @for (var i = 0; i < Model.CalismaSaatleri.Count; i++)
+    {
+        <div class="row g-2 align-items-end mb-2">
+            <input type="hidden" asp-for="CalismaSaatleri[i].Id" />
+            <input type="hidden" asp-for="CalismaSaatleri[i].Gun" />
+            <div class="col-md-3">@Model.CalismaSaatleri[i].Gun</div>
+            <div class="col-md-2">
+                <input asp-for="CalismaSaatleri[i].Acik" class="form-check-input" /> Açık
+            </div>
+            <div class="col-md-3"><input asp-for="CalismaSaatleri[i].Acilis" class="form-control" type="time" /></div>
+            <div class="col-md-3"><input asp-for="CalismaSaatleri[i].Kapanis" class="form-control" type="time" /></div>
+        </div>
+    }
+    <button class="btn btn-pati">Kaydet</button>
+</form>

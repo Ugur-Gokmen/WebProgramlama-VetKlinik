@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Pati Ev</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">Pati Ev Kliniği</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div id="menu" class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto">
+                        @if (User.IsInRole("Uye") || User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Hayvanlar" asp-action="Index">Hayvanlarım</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Randevular" asp-action="Index">Randevularım</a></li>
+                        }
+                        @if (User.IsInRole("Veteriner") || User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="VeterinerPanel" asp-action="Index">Hekim paneli</a></li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-area="Admin" asp-controller="Klinikler" asp-action="Index">Admin</a></li>
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Profil" asp-action="Index">Profilim</a></li>
+                            <li class="nav-item">
+                                <form asp-controller="Hesap" asp-action="Cikis" method="post" class="d-inline">
+                                    <button class="btn btn-sm btn-outline-light mt-1">Çıkış</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Hesap" asp-action="Giris">Giriş</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Hesap" asp-action="Kayit">Kayıt</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container py-4">
+        @if (TempData["Mesaj"] != null)
+        {
+            <div class="alert alert-info">@TempData["Mesaj"]</div>
+        }
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+    <footer class="footer text-center py-3">
+        <div class="container small text-muted">Pati Ev Veteriner Kliniği · Web Programlama 2026-2027 Güz</div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

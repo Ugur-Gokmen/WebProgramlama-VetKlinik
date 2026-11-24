@@ -1,0 +1,46 @@
+﻿@model dynamic
+@{
+    ViewData["Title"] = "Ana sayfa";
+    var hizmetler = ViewBag.Hizmetler as IEnumerable<Hizmet> ?? Enumerable.Empty<Hizmet>();
+    var veterinerler = ViewBag.Veterinerler as IEnumerable<Veteriner> ?? Enumerable.Empty<Veteriner>();
+}
+
+<div class="hero mb-4">
+    <h1 class="display-6">Pati Ev Veteriner Kliniği</h1>
+    <p class="mb-3">Randevu alın, aşı takibini tutun, hekim notlarını görün. MCP ve REST API ile asistanlar da aynı servis katmanını kullanır.</p>
+    @if (User.Identity?.IsAuthenticated != true)
+    {
+        <a class="btn btn-light" asp-controller="Hesap" asp-action="Kayit">Üye ol</a>
+        <a class="btn btn-outline-light" asp-controller="Hesap" asp-action="Giris">Giriş yap</a>
+    }
+    else
+    {
+        <a class="btn btn-light" asp-controller="Randevular" asp-action="Olustur">Randevu al</a>
+    }
+</div>
+
+<div class="row g-3">
+    <div class="col-md-6">
+        <div class="card kart p-3 h-100">
+            <h2 class="h5">Hizmetler</h2>
+            <ul class="list-group list-group-flush">
+                @foreach (var h in hizmetler)
+                {
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>@h.Ad</span>
+                        <span>@h.SureDakika dk · @h.Ucret.ToString("N0") ₺</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card kart p-3 h-100">
+            <h2 class="h5">Hekimlerimiz</h2>
+            @foreach (var v in veterinerler)
+            {
+                <p class="mb-1"><strong>@v.AdSoyad</strong> — @string.Join(", ", v.Uzmanliklar.Select(u => u.Uzmanlik.Ad))</p>
+            }
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+@model Klinik
+@{
+    ViewData["Title"] = Model.Ad;
+}
+<partial name="_AdminMenu" />
+<div class="card kart p-4">
+    <h1 class="h4">@Model.Ad</h1>
+    <p>@Model.Adres · @Model.Telefon</p>
+    <ul>
+        @foreach (var s in Model.CalismaSaatleri.OrderBy(x => x.Gun))
+        {
+            <li>@s.Gun: @(s.Acik ? $"{s.Acilis:hh\\:mm}-{s.Kapanis:hh\\:mm}" : "Kapalı")</li>
+        }
+    </ul>
+</div>

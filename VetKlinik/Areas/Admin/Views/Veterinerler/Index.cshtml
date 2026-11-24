@@ -1,0 +1,28 @@
+@model IEnumerable<Veteriner>
+@{
+    ViewData["Title"] = "Veterinerler";
+}
+<partial name="_AdminMenu" />
+<div class="d-flex justify-content-between mb-3">
+    <h1 class="h4">Veterinerler</h1>
+    <a class="btn btn-pati" asp-action="Ekle">Yeni veteriner</a>
+</div>
+<table class="table bg-white">
+    <thead><tr><th>Ad</th><th>Uzmanlık</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var v in Model)
+    {
+        <tr>
+            <td>@v.AdSoyad</td>
+            <td>@string.Join(", ", v.Uzmanliklar.Select(u => u.Uzmanlik.Ad))</td>
+            <td>
+                <a asp-action="Detay" asp-route-id="@v.Id">Detay</a> |
+                <a asp-action="Duzenle" asp-route-id="@v.Id">Düzenle</a>
+                <form asp-action="Sil" asp-route-id="@v.Id" method="post" class="d-inline">
+                    <button class="btn btn-link btn-sm text-danger">Sil</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

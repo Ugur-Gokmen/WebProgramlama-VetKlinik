@@ -1,0 +1,29 @@
+@model IEnumerable<Hizmet>
+@{
+    ViewData["Title"] = "Hizmetler";
+}
+<partial name="_AdminMenu" />
+<div class="d-flex justify-content-between mb-3">
+    <h1 class="h4">Hizmetler</h1>
+    <a class="btn btn-pati" asp-action="Ekle">Yeni hizmet</a>
+</div>
+<table class="table bg-white">
+    <thead><tr><th>Ad</th><th>Süre</th><th>Ücret</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var h in Model)
+    {
+        <tr>
+            <td>@h.Ad</td>
+            <td>@h.SureDakika dk</td>
+            <td>@h.Ucret.ToString("N0") ₺</td>
+            <td>
+                <a asp-action="Detay" asp-route-id="@h.Id">Detay</a> |
+                <a asp-action="Duzenle" asp-route-id="@h.Id">Düzenle</a>
+                <form asp-action="Sil" asp-route-id="@h.Id" method="post" class="d-inline">
+                    <button class="btn btn-link btn-sm text-danger">Sil</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

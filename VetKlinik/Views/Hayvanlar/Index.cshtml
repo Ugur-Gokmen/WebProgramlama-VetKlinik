@@ -1,0 +1,28 @@
+@model IEnumerable<EvcilHayvan>
+@{
+    ViewData["Title"] = "Hayvanlarım";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Hayvanlarım</h1>
+    <a class="btn btn-pati" asp-action="Ekle">Yeni hayvan</a>
+</div>
+<div class="row g-3">
+    @foreach (var h in Model)
+    {
+        <div class="col-md-4">
+            <div class="card kart p-3">
+                @if (!string.IsNullOrEmpty(h.FotoYolu))
+                {
+                    <img src="@h.FotoYolu" class="img-fluid rounded mb-2" alt="@h.Ad" />
+                }
+                <h2 class="h5">@h.Ad</h2>
+                <p class="mb-2">@h.Tur · @h.Irk · @h.Kilo kg</p>
+                <a class="btn btn-outline-success btn-sm" asp-action="Detay" asp-route-id="@h.Id">Detay</a>
+            </div>
+        </div>
+    }
+</div>
+@if (!Model.Any())
+{
+    <p>Henüz hayvan eklemediniz.</p>
+}

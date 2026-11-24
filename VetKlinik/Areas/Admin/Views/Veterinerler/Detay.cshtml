@@ -1,0 +1,17 @@
+@model Veteriner
+@{
+    ViewData["Title"] = Model.AdSoyad;
+}
+<partial name="_AdminMenu" />
+<div class="card kart p-4">
+    <h1 class="h4">@Model.AdSoyad</h1>
+    <p>Klinik: @Model.Klinik.Ad</p>
+    <p>Hizmetler: @string.Join(", ", Model.Hizmetler.Select(h => h.Hizmet.Ad))</p>
+    <p>Uzmanlık: @string.Join(", ", Model.Uzmanliklar.Select(u => u.Uzmanlik.Ad))</p>
+    <ul>
+        @foreach (var m in Model.Musaitlikler.OrderBy(x => x.Gun))
+        {
+            <li>@m.Gun: @(m.Musait ? $"{m.Baslangic:hh\\:mm}-{m.Bitis:hh\\:mm}" : "Kapalı")</li>
+        }
+    </ul>
+</div>

@@ -1,0 +1,34 @@
+@model GirisViewModel
+@{
+    ViewData["Title"] = "Giriş";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card kart p-4">
+            <h1 class="h4 mb-3">Giriş yap</h1>
+            <form asp-action="Giris" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="mb-3">
+                    <label asp-for="Eposta" class="form-label"></label>
+                    <input asp-for="Eposta" class="form-control" />
+                    <span asp-validation-for="Eposta" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Sifre" class="form-label"></label>
+                    <input asp-for="Sifre" class="form-control" />
+                    <span asp-validation-for="Sifre" class="text-danger"></span>
+                </div>
+                <div class="form-check mb-3">
+                    <input asp-for="BeniHatirla" class="form-check-input" />
+                    <label asp-for="BeniHatirla" class="form-check-label"></label>
+                </div>
+                <button class="btn btn-pati w-100">Giriş</button>
+            </form>
+            <p class="small mt-3 mb-0">Hesabınız yok mu? <a asp-action="Kayit">Kayıt olun</a></p>
+            <p class="small text-muted mt-2">Admin: B241210053@sakarya.edu.tr / sau</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

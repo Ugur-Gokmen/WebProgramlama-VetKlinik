@@ -1,0 +1,42 @@
+@model EvcilHayvan
+@{
+    ViewData["Title"] = Model.Ad;
+}
+<div class="card kart p-4">
+    <div class="d-flex justify-content-between">
+        <h1 class="h4">@Model.Ad</h1>
+        <div>
+            <a class="btn btn-outline-secondary btn-sm" asp-action="Duzenle" asp-route-id="@Model.Id">Düzenle</a>
+            <form asp-action="Sil" asp-route-id="@Model.Id" method="post" class="d-inline" onsubmit="return confirm('Silinsin mi?');">
+                <button class="btn btn-outline-danger btn-sm">Sil</button>
+            </form>
+        </div>
+    </div>
+    @if (!string.IsNullOrEmpty(Model.FotoYolu))
+    {
+        <img src="@Model.FotoYolu" style="max-width:220px" class="rounded my-2" alt="@Model.Ad" />
+    }
+    <p>Tür: @Model.Tur · Irk: @Model.Irk · Doğum: @Model.DogumTarihi.ToShortDateString() · Kilo: @Model.Kilo kg</p>
+
+    <h2 class="h5 mt-3">Aşı kayıtları</h2>
+    <a class="btn btn-pati btn-sm mb-2" asp-controller="Asilar" asp-action="Ekle" asp-route-hayvanId="@Model.Id">Aşı ekle</a>
+    <table class="table">
+        <thead><tr><th>Aşı</th><th>Tarih</th><th>Sonraki doz</th><th></th></tr></thead>
+        <tbody>
+        @foreach (var a in Model.AsiKayitlari.OrderByDescending(x => x.YapildigiTarih))
+        {
+            <tr>
+                <td>@a.AsiAdi</td>
+                <td>@a.YapildigiTarih.ToShortDateString()</td>
+                <td>@(a.SonrakiDozTarihi?.ToShortDateString() ?? "-")</td>
+                <td>
+                    <a asp-controller="Asilar" asp-action="Duzenle" asp-route-id="@a.Id">Düzenle</a>
+                    <form asp-controller="Asilar" asp-action="Sil" asp-route-id="@a.Id" method="post" class="d-inline">
+                        <button class="btn btn-link btn-sm text-danger">Sil</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

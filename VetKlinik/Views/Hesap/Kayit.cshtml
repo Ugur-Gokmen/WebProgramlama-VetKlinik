@@ -1,0 +1,38 @@
+@model KayitViewModel
+@{
+    ViewData["Title"] = "Kayıt";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card kart p-4">
+            <h1 class="h4 mb-3">Üye ol</h1>
+            <form asp-action="Kayit" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="mb-3">
+                    <label asp-for="AdSoyad" class="form-label"></label>
+                    <input asp-for="AdSoyad" class="form-control" />
+                    <span asp-validation-for="AdSoyad" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Eposta" class="form-label"></label>
+                    <input asp-for="Eposta" class="form-control" />
+                    <span asp-validation-for="Eposta" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="Sifre" class="form-label"></label>
+                    <input asp-for="Sifre" class="form-control" />
+                    <span asp-validation-for="Sifre" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="SifreTekrar" class="form-label"></label>
+                    <input asp-for="SifreTekrar" class="form-control" />
+                    <span asp-validation-for="SifreTekrar" class="text-danger"></span>
+                </div>
+                <button class="btn btn-pati w-100">Kayıt ol</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

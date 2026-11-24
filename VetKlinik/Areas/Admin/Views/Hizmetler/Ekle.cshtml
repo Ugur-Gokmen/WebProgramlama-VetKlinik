@@ -1,0 +1,10 @@
+@model Hizmet
+@{
+    ViewData["Title"] = "Hizmet ekle";
+}
+<partial name="_AdminMenu" />
+<div class="card kart p-4 col-md-6">
+    <h1 class="h4">Hizmet ekle</h1>
+    <partial name="_HizmetForm" />
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

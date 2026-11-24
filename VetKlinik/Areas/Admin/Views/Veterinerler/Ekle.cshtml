@@ -1,0 +1,10 @@
+@model VeterinerFormViewModel
+@{
+    ViewData["Title"] = "Veteriner ekle";
+}
+<partial name="_AdminMenu" />
+<div class="card kart p-4">
+    <h1 class="h4">Veteriner ekle</h1>
+    <partial name="_VeterinerForm" />
+</div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

@@ -1,0 +1,27 @@
+@model Randevu
+@{
+    ViewData["Title"] = "Randevu yönetimi";
+}
+<div class="card kart p-4">
+    <h1 class="h4">@Model.EvcilHayvan.Ad — @Model.Hizmet.Ad</h1>
+    <p>Sahip: @Model.EvcilHayvan.Sahip.AdSoyad</p>
+    <p>Zaman: @Model.Baslangic.ToString("g") (@Model.SureDakika dk)</p>
+    <p>Durum: @Model.Durum</p>
+    @if (Model.Durum == RandevuDurumu.Bekliyor)
+    {
+        <form asp-action="Onayla" asp-route-id="@Model.Id" method="post" class="d-inline">
+            <button class="btn btn-success">Onayla</button>
+        </form>
+        <form asp-action="Reddet" asp-route-id="@Model.Id" method="post" class="d-inline">
+            <button class="btn btn-outline-danger">Reddet</button>
+        </form>
+    }
+    @if (Model.Durum == RandevuDurumu.Onaylandi || Model.Durum == RandevuDurumu.Tamamlandi)
+    {
+        <form asp-action="MuayeneNotu" asp-route-id="@Model.Id" method="post" class="mt-3">
+            <label class="form-label">Muayene notu</label>
+            <textarea name="notMetni" class="form-control" rows="4">@(Model.MuayeneNotu?.NotMetni)</textarea>
+            <button class="btn btn-pati mt-2">Notu kaydet ve tamamla</button>
+        </form>
+    }
+</div>

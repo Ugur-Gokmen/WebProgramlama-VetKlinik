@@ -1,0 +1,21 @@
+@model IEnumerable<Randevu>
+@{
+    ViewData["Title"] = "Hekim paneli";
+}
+<h1 class="h4">Randevular</h1>
+<table class="table bg-white">
+    <thead><tr><th>Tarih</th><th>Hayvan</th><th>Sahip</th><th>Hizmet</th><th>Durum</th><th></th></tr></thead>
+    <tbody>
+    @foreach (var r in Model)
+    {
+        <tr>
+            <td>@r.Baslangic.ToString("g")</td>
+            <td>@r.EvcilHayvan.Ad</td>
+            <td>@r.EvcilHayvan.Sahip.AdSoyad</td>
+            <td>@r.Hizmet.Ad</td>
+            <td>@r.Durum</td>
+            <td><a asp-action="Detay" asp-route-id="@r.Id">Yönet</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

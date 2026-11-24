@@ -1,0 +1,53 @@
+@model RandevuOlusturViewModel
+@{
+    ViewData["Title"] = "Randevu al";
+}
+<div class="card kart p-4">
+    <h1 class="h4">Randevu al</h1>
+    <form asp-action="Olustur" method="post" id="randevuForm">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <label asp-for="EvcilHayvanId" class="form-label"></label>
+                <select asp-for="EvcilHayvanId" asp-items="Model.Hayvanlar" class="form-select"></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="HizmetId" class="form-label"></label>
+                <select asp-for="HizmetId" asp-items="Model.Hizmetler" class="form-select" id="hizmetId"></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="VeterinerId" class="form-label"></label>
+                <select asp-for="VeterinerId" asp-items="Model.Veterinerler" class="form-select" id="veterinerId"></select>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Baslangic" class="form-label"></label>
+                <input asp-for="Baslangic" class="form-control" type="datetime-local" id="baslangic" />
+            </div>
+        </div>
+        <button type="button" class="btn btn-outline-success mt-3" id="slotBtn">Uygun saatleri göster</button>
+        <button class="btn btn-pati mt-3">Randevu oluştur</button>
+        <ul id="slotlar" class="mt-3"></ul>
+    </form>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        $("#slotBtn").on("click", function () {
+            var hizmetId = $("#hizmetId").val();
+            var tarih = $("#baslangic").val();
+            var vet = $("#veterinerId").val();
+            $.get("/Randevular/Slotlar", { hizmetId: hizmetId, tarih: tarih, veterinerId: vet }, function (data) {
+                var ul = $("#slotlar").empty();
+                if (!data.length) { ul.append("<li>Uygun slot yok.</li>"); return; }
+                data.forEach(function (s) {
+                    var li = $("<li class='mb-1'>").text(s.veterinerAdi + " · " + s.baslangic);
+                    li.on("click", function () {
+                        $("#baslangic").val(s.baslangic.replace(" ", "T").substring(0, 16));
+                        $("#veterinerId").val(s.veterinerId);
+                    });
+                    ul.append(li);
+                });
+            });
+        });
+    </script>
+}

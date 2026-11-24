@@ -1,0 +1,50 @@
+@model VeterinerFormViewModel
+@{
+    var hizmetler = ViewBag.Hizmetler as IEnumerable<Hizmet> ?? Enumerable.Empty<Hizmet>();
+    var uzmanliklar = ViewBag.Uzmanliklar as IEnumerable<Uzmanlik> ?? Enumerable.Empty<Uzmanlik>();
+}
+<form method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-2"><label asp-for="AdSoyad" class="form-label"></label><input asp-for="AdSoyad" class="form-control" /></div>
+    @if (Model.Id == 0)
+    {
+        <div class="mb-2"><label asp-for="Eposta" class="form-label"></label><input asp-for="Eposta" class="form-control" /></div>
+        <div class="mb-2"><label asp-for="Sifre" class="form-label"></label><input asp-for="Sifre" class="form-control" /></div>
+    }
+    <div class="mb-2">
+        <label asp-for="KlinikId" class="form-label"></label>
+        <select asp-for="KlinikId" asp-items="ViewBag.Klinikler" class="form-select"></select>
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Hizmetler</label>
+        @foreach (var h in hizmetler)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="SecilenHizmetler" value="@h.Id" checked="@Model.SecilenHizmetler.Contains(h.Id)" />
+                <label class="form-check-label">@h.Ad</label>
+            </div>
+        }
+    </div>
+    <div class="mb-2">
+        <label class="form-label">Uzmanlıklar</label>
+        @foreach (var u in uzmanliklar)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="SecilenUzmanliklar" value="@u.Id" checked="@Model.SecilenUzmanliklar.Contains(u.Id)" />
+                <label class="form-check-label">@u.Ad</label>
+            </div>
+        }
+    </div>
+    <h2 class="h6">Haftalık müsaitlik</h2>
+    @for (var i = 0; i < Model.Musaitlikler.Count; i++)
+    {
+        <div class="row g-2 mb-2">
+            <input type="hidden" asp-for="Musaitlikler[i].Gun" />
+            <div class="col-md-3">@Model.Musaitlikler[i].Gun</div>
+            <div class="col-md-2"><input asp-for="Musaitlikler[i].Musait" class="form-check-input" /> Müsait</div>
+            <div class="col-md-3"><input asp-for="Musaitlikler[i].Baslangic" class="form-control" type="time" /></div>
+            <div class="col-md-3"><input asp-for="Musaitlikler[i].Bitis" class="form-control" type="time" /></div>
+        </div>
+    }
+    <button class="btn btn-pati">Kaydet</button>
+</form>

@@ -1,0 +1,22 @@
+@model Randevu
+@{
+    ViewData["Title"] = "Randevu";
+}
+<div class="card kart p-4">
+    <h1 class="h4">Randevu #@Model.Id</h1>
+    <p>Hayvan: @Model.EvcilHayvan.Ad</p>
+    <p>Hizmet: @Model.Hizmet.Ad (@Model.SureDakika dk, @Model.Ucret.ToString("N0") ₺)</p>
+    <p>Hekim: @Model.Veteriner.AdSoyad</p>
+    <p>Zaman: @Model.Baslangic.ToString("g") - @Model.Bitis.ToString("t")</p>
+    <p>Durum: <strong>@Model.Durum</strong></p>
+    @if (Model.MuayeneNotu != null)
+    {
+        <div class="alert alert-secondary">Muayene notu: @Model.MuayeneNotu.NotMetni</div>
+    }
+    @if (Model.Durum == RandevuDurumu.Bekliyor || Model.Durum == RandevuDurumu.Onaylandi)
+    {
+        <form asp-action="Iptal" asp-route-id="@Model.Id" method="post">
+            <button class="btn btn-outline-danger">İptal et</button>
+        </form>
+    }
+</div>
