@@ -47,6 +47,18 @@ public class UygulamaDbContext : IdentityDbContext<UygulamaKullanicisi>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.Entity<Randevu>()
+            .HasOne(r => r.Hizmet)
+            .WithMany()
+            .HasForeignKey(r => r.HizmetId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Randevu>()
+            .HasOne(r => r.Veteriner)
+            .WithMany(v => v.Randevular)
+            .HasForeignKey(r => r.VeterinerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.Entity<Randevu>()
             .HasOne(r => r.MuayeneNotu)
             .WithOne(n => n.Randevu)
             .HasForeignKey<MuayeneNotu>(n => n.RandevuId);

@@ -110,7 +110,7 @@ public static class VeriTohumu
         {
             KlinikId = klinik.Id,
             KullaniciId = elif.Id,
-            AdSoyad = "Dt. Elif Kaya"
+            AdSoyad = "Vet. Hek. Elif Kaya"
         };
         vetElif.Uzmanliklar.Add(new VeterinerUzmanlik { UzmanlikId = uzmanliklar.First(u => u.Ad == "Küçük hayvan").Id });
         vetElif.Uzmanliklar.Add(new VeterinerUzmanlik { UzmanlikId = uzmanliklar.First(u => u.Ad == "Dermatoloji").Id });
@@ -123,7 +123,7 @@ public static class VeriTohumu
         {
             KlinikId = klinik.Id,
             KullaniciId = mert.Id,
-            AdSoyad = "Dt. Mert Yılmaz"
+            AdSoyad = "Vet. Hek. Mert Yılmaz"
         };
         vetMert.Uzmanliklar.Add(new VeterinerUzmanlik { UzmanlikId = uzmanliklar.First(u => u.Ad == "Cerrahi").Id });
         vetMert.Uzmanliklar.Add(new VeterinerUzmanlik { UzmanlikId = uzmanliklar.First(u => u.Ad == "Küçük hayvan").Id });
