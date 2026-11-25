@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 
 namespace VetKlinik.Models;
 
@@ -7,6 +8,7 @@ public class VeterinerMusaitlik
     public int Id { get; set; }
 
     public int VeterinerId { get; set; }
+    [ValidateNever]
     public Veteriner Veteriner { get; set; } = null!;
 
     [Display(Name = "Gün")]

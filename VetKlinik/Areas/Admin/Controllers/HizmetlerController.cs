@@ -45,6 +45,7 @@ public class HizmetlerController : Controller
             return View(model);
         }
         await _hizmetler.EkleAsync(model);
+        TempData["Mesaj"] = "Hizmet eklendi.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -77,6 +78,7 @@ public class HizmetlerController : Controller
         mevcut.SureDakika = model.SureDakika;
         mevcut.Ucret = model.Ucret;
         await _hizmetler.GuncelleAsync(mevcut);
+        TempData["Mesaj"] = "Hizmet güncellendi.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -84,10 +86,8 @@ public class HizmetlerController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Sil(int id)
     {
-        var h = await _hizmetler.GetirAsync(id);
-        if (h == null)
-            return NotFound();
-        await _hizmetler.SilAsync(h);
+        var sonuc = await _hizmetler.SilAsync(id);
+        TempData["Mesaj"] = sonuc.Mesaj;
         return RedirectToAction(nameof(Index));
     }
 

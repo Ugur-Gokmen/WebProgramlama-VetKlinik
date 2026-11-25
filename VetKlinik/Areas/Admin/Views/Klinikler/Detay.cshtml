@@ -7,9 +7,12 @@
     <h1 class="h4">@Model.Ad</h1>
     <p>@Model.Adres · @Model.Telefon</p>
     <ul>
+        @{
+            var tr = System.Globalization.CultureInfo.GetCultureInfo("tr-TR");
+        }
         @foreach (var s in Model.CalismaSaatleri.OrderBy(x => x.Gun))
         {
-            <li>@s.Gun: @(s.Acik ? $"{s.Acilis:hh\\:mm}-{s.Kapanis:hh\\:mm}" : "Kapalı")</li>
+            <li>@tr.DateTimeFormat.GetDayName(s.Gun): @(s.Acik ? $"{s.Acilis:hh\\:mm}-{s.Kapanis:hh\\:mm}" : "Kapalı")</li>
         }
     </ul>
 </div>

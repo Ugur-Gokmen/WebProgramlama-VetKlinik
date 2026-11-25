@@ -31,9 +31,16 @@ public class HizmetServisi
         await _db.SaveChangesAsync();
     }
 
-    public async Task SilAsync(Hizmet hizmet)
+    public async Task<IslemSonucu> SilAsync(int id)
     {
+        var hizmet = await GetirAsync(id);
+        if (hizmet == null)
+            return IslemSonucu.Hata("Hizmet bulunamadı.");
+        if (await _db.Randevular.AnyAsync(r => r.HizmetId == id))
+            return IslemSonucu.Hata("Randevusu bulunan hizmet silinemez.");
+
         _db.Hizmetler.Remove(hizmet);
         await _db.SaveChangesAsync();
+        return IslemSonucu.Tamam("Hizmet silindi.");
     }
 }

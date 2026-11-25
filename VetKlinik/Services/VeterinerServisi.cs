@@ -102,8 +102,13 @@ public class VeterinerServisi
         if (await _db.Randevular.AnyAsync(r => r.VeterinerId == id))
             return IslemSonucu.Hata("Randevusu olan veteriner silinemez.");
 
+        var kullanici = vet.Kullanici;
         _db.Veterinerler.Remove(vet);
         await _db.SaveChangesAsync();
+
+        if (kullanici != null)
+            await _kullanicilar.DeleteAsync(kullanici);
+
         return IslemSonucu.Tamam("Veteriner silindi.");
     }
 

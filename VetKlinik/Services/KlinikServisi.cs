@@ -32,10 +32,17 @@ public class KlinikServisi
         await _db.SaveChangesAsync();
     }
 
-    public async Task SilAsync(Klinik klinik)
+    public async Task<IslemSonucu> SilAsync(int id)
     {
+        var klinik = await GetirAsync(id);
+        if (klinik == null)
+            return IslemSonucu.Hata("Klinik bulunamadı.");
+        if (await _db.Hizmetler.AnyAsync(h => h.KlinikId == id) || await _db.Veterinerler.AnyAsync(v => v.KlinikId == id))
+            return IslemSonucu.Hata("Hizmeti veya veterineri bulunan klinik silinemez.");
+
         _db.Klinikler.Remove(klinik);
         await _db.SaveChangesAsync();
+        return IslemSonucu.Tamam("Klinik silindi.");
     }
 
     private static void SaatleriTamamla(Klinik klinik)

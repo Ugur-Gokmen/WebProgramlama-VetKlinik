@@ -19,7 +19,7 @@
             <td>
                 <a asp-action="Detay" asp-route-id="@h.Id">Detay</a> |
                 <a asp-action="Duzenle" asp-route-id="@h.Id">Düzenle</a>
-                <form asp-action="Sil" asp-route-id="@h.Id" method="post" class="d-inline">
+                <form asp-action="Sil" asp-route-id="@h.Id" method="post" class="d-inline" onsubmit="return confirm('Hizmeti silmek istediğinize emin misiniz?');">
                     <button class="btn btn-link btn-sm text-danger">Sil</button>
                 </form>
             </td>

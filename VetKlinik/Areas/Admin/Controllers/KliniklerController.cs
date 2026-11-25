@@ -34,9 +34,11 @@ public class KliniklerController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Ekle(KlinikFormViewModel model)
     {
+        SaatleriKontrolEt(model);
         if (!ModelState.IsValid)
             return View(model);
         await _klinikler.EkleAsync(ModeleKlinik(model));
+        TempData["Mesaj"] = "Klinik eklendi.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -60,9 +62,12 @@ public class KliniklerController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Duzenle(int id, KlinikFormViewModel model)
     {
+        if (model.Id != 0 && id != model.Id)
+            return NotFound();
         var klinik = await _klinikler.GetirAsync(id);
         if (klinik == null)
             return NotFound();
+        SaatleriKontrolEt(model);
         if (!ModelState.IsValid)
             return View(model);
 
@@ -79,6 +84,7 @@ public class KliniklerController : Controller
             mevcut.Kapanis = saat.Kapanis;
         }
         await _klinikler.GuncelleAsync(klinik);
+        TempData["Mesaj"] = "Klinik güncellendi.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -86,11 +92,17 @@ public class KliniklerController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Sil(int id)
     {
-        var klinik = await _klinikler.GetirAsync(id);
-        if (klinik == null)
-            return NotFound();
-        await _klinikler.SilAsync(klinik);
+        var sonuc = await _klinikler.SilAsync(id);
+        TempData["Mesaj"] = sonuc.Mesaj;
         return RedirectToAction(nameof(Index));
+    }
+
+    private void SaatleriKontrolEt(KlinikFormViewModel model)
+    {
+        foreach (var s in model.CalismaSaatleri.Where(x => x.Acik && x.Acilis >= x.Kapanis))
+        {
+            ModelState.AddModelError("", $"{s.Gun} günü için açılış saati kapanış saatinden önce olmalıdır.");
+        }
     }
 
     private static KlinikFormViewModel BosForm()

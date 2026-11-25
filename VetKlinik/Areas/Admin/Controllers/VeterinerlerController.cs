@@ -44,6 +44,7 @@ public class VeterinerlerController : Controller
     {
         if (string.IsNullOrWhiteSpace(model.Sifre))
             ModelState.AddModelError(nameof(model.Sifre), "Yeni hekim için şifre zorunlu.");
+        MusaitlikleriKontrolEt(model);
         if (!ModelState.IsValid)
         {
             await ListeleriDoldur();
@@ -64,6 +65,7 @@ public class VeterinerlerController : Controller
             await ListeleriDoldur();
             return View(model);
         }
+        TempData["Mesaj"] = sonuc.Mesaj;
         return RedirectToAction(nameof(Index));
     }
 
@@ -90,11 +92,14 @@ public class VeterinerlerController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Duzenle(int id, VeterinerFormViewModel model)
     {
+        if (model.Id != 0 && id != model.Id)
+            return NotFound();
         var v = await _veterinerler.GetirAsync(id);
         if (v == null)
             return NotFound();
         ModelState.Remove(nameof(model.Sifre));
         ModelState.Remove(nameof(model.Eposta));
+        MusaitlikleriKontrolEt(model);
         if (!ModelState.IsValid)
         {
             await ListeleriDoldur();
@@ -104,6 +109,7 @@ public class VeterinerlerController : Controller
         v.AdSoyad = model.AdSoyad;
         v.KlinikId = model.KlinikId;
         await _veterinerler.GuncelleIliskilerAsync(v, model.SecilenHizmetler, model.SecilenUzmanliklar, model.Musaitlikler);
+        TempData["Mesaj"] = "Veteriner güncellendi.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -114,6 +120,14 @@ public class VeterinerlerController : Controller
         var sonuc = await _veterinerler.SilAsync(id);
         TempData["Mesaj"] = sonuc.Mesaj;
         return RedirectToAction(nameof(Index));
+    }
+
+    private void MusaitlikleriKontrolEt(VeterinerFormViewModel model)
+    {
+        foreach (var m in model.Musaitlikler.Where(x => x.Musait && x.Baslangic >= x.Bitis))
+        {
+            ModelState.AddModelError("", $"{m.Gun} günü için başlangıç saati bitiş saatinden önce olmalıdır.");
+        }
     }
 
     private static VeterinerFormViewModel BosForm()

@@ -18,7 +18,7 @@
             <td>
                 <a asp-action="Detay" asp-route-id="@v.Id">Detay</a> |
                 <a asp-action="Duzenle" asp-route-id="@v.Id">Düzenle</a>
-                <form asp-action="Sil" asp-route-id="@v.Id" method="post" class="d-inline">
+                <form asp-action="Sil" asp-route-id="@v.Id" method="post" class="d-inline" onsubmit="return confirm('Veterineri silmek istediğinize emin misiniz?');">
                     <button class="btn btn-link btn-sm text-danger">Sil</button>
                 </form>
             </td>
