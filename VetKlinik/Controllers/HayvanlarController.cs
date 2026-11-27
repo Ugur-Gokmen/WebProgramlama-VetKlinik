@@ -13,12 +13,14 @@ public class HayvanlarController : Controller
     private readonly HayvanServisi _hayvanlar;
     private readonly FotoServisi _foto;
     private readonly IWebHostEnvironment _env;
+    private readonly TimeProvider _saat;
 
-    public HayvanlarController(HayvanServisi hayvanlar, FotoServisi foto, IWebHostEnvironment env)
+    public HayvanlarController(HayvanServisi hayvanlar, FotoServisi foto, IWebHostEnvironment env, TimeProvider saat)
     {
         _hayvanlar = hayvanlar;
         _foto = foto;
         _env = env;
+        _saat = saat;
     }
 
     public async Task<IActionResult> Index()
@@ -42,6 +44,8 @@ public class HayvanlarController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Ekle(HayvanFormViewModel model)
     {
+        if (model.DogumTarihi.Date > _saat.GetLocalNow().Date)
+            ModelState.AddModelError(nameof(model.DogumTarihi), "Doğum tarihi bugünden ileri olamaz.");
         if (!ModelState.IsValid)
             return View(model);
 
@@ -62,6 +66,7 @@ public class HayvanlarController : Controller
             Kilo = model.Kilo,
             FotoYolu = foto.Yol
         });
+        TempData["Mesaj"] = "Evcil hayvan eklendi.";
         return RedirectToAction(nameof(Index));
     }
 
@@ -87,11 +92,18 @@ public class HayvanlarController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Duzenle(int id, HayvanFormViewModel model)
     {
+        if (model.Id != 0 && id != model.Id)
+            return NotFound();
         var hayvan = await _hayvanlar.GetirAsync(id, User.IdAl());
         if (hayvan == null)
             return NotFound();
+        if (model.DogumTarihi.Date > _saat.GetLocalNow().Date)
+            ModelState.AddModelError(nameof(model.DogumTarihi), "Doğum tarihi bugünden ileri olamaz.");
         if (!ModelState.IsValid)
+        {
+            model.MevcutFoto = hayvan.FotoYolu;
             return View(model);
+        }
 
         var foto = await _foto.KaydetAsync(_env, model.Foto);
         if (!foto.Tamam)
@@ -107,9 +119,13 @@ public class HayvanlarController : Controller
         hayvan.DogumTarihi = model.DogumTarihi;
         hayvan.Kilo = model.Kilo;
         if (foto.Yol != null)
+        {
+            _foto.Sil(_env, hayvan.FotoYolu);
             hayvan.FotoYolu = foto.Yol;
+        }
 
         await _hayvanlar.GuncelleAsync(hayvan);
+        TempData["Mesaj"] = "Evcil hayvan güncellendi.";
         return RedirectToAction(nameof(Detay), new { id });
     }
 
@@ -117,9 +133,15 @@ public class HayvanlarController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Sil(int id)
     {
+        var hayvan = await _hayvanlar.GetirAsync(id, User.IdAl());
+        if (hayvan == null)
+            return NotFound();
+        var fotoYolu = hayvan.FotoYolu;
         var silindi = await _hayvanlar.SilAsync(id, User.IdAl());
         if (!silindi)
             return NotFound();
+        _foto.Sil(_env, fotoYolu);
+        TempData["Mesaj"] = "Evcil hayvan silindi.";
         return RedirectToAction(nameof(Index));
     }
 }

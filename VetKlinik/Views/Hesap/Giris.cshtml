@@ -7,7 +7,7 @@
     <div class="col-md-5">
         <div class="card kart p-4">
             <h1 class="h4 mb-3">Giriş yap</h1>
-            <form asp-action="Giris" method="post">
+            <form asp-action="Giris" asp-route-returnUrl="@ViewBag.ReturnUrl" method="post">
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="mb-3">
                     <label asp-for="Eposta" class="form-label"></label>

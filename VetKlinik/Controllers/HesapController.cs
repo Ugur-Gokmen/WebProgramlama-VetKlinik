@@ -28,6 +28,7 @@ public class HesapController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Giris(GirisViewModel model, string? returnUrl = null)
     {
+        ViewBag.ReturnUrl = returnUrl;
         if (!ModelState.IsValid)
             return View(model);
 
