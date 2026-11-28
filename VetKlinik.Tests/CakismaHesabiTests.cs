@@ -32,7 +32,19 @@ public class CakismaHesabiTests
     {
         Assert.False(RandevuServisi.BloklayanDurum(RandevuDurumu.Reddedildi));
         Assert.False(RandevuServisi.BloklayanDurum(RandevuDurumu.Iptal));
+        Assert.False(RandevuServisi.BloklayanDurum(RandevuDurumu.Tamamlandi));
         Assert.True(RandevuServisi.BloklayanDurum(RandevuDurumu.Bekliyor));
         Assert.True(RandevuServisi.BloklayanDurum(RandevuDurumu.Onaylandi));
+    }
+
+    [Fact]
+    public void Tam_baslangicta_biten_randevu_cakismaz()
+    {
+        var mevcutBas = new DateTime(2026, 12, 1, 11, 0, 0);
+        var mevcutBit = new DateTime(2026, 12, 1, 11, 30, 0);
+        var yeniBas = new DateTime(2026, 12, 1, 10, 30, 0);
+        var yeniBit = new DateTime(2026, 12, 1, 11, 0, 0);
+
+        Assert.False(RandevuServisi.CakisiyorMu(yeniBas, yeniBit, mevcutBas, mevcutBit));
     }
 }

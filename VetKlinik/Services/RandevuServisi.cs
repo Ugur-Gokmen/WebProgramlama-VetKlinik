@@ -86,7 +86,7 @@ public class RandevuServisi
         var hekimler = await _db.Veterinerler
             .Include(v => v.Musaitlikler)
             .Include(v => v.Hizmetler)
-            .Where(v => v.Hizmetler.Any(h => h.HizmetId == hizmetId))
+            .Where(v => v.KlinikId == hizmet.KlinikId && v.Hizmetler.Any(h => h.HizmetId == hizmetId))
             .Where(v => !veterinerId.HasValue || v.Id == veterinerId.Value)
             .ToListAsync();
 
@@ -99,7 +99,8 @@ public class RandevuServisi
         var gunBas = gun.Date;
         var gunBit = gunBas.AddDays(1);
         var mevcutlar = await _db.Randevular
-            .Where(r => BloklayanDurum(r.Durum) && r.Baslangic < gunBit && r.Bitis > gunBas)
+            .Where(r => (r.Durum == RandevuDurumu.Bekliyor || r.Durum == RandevuDurumu.Onaylandi)
+                        && r.Baslangic < gunBit && r.Bitis > gunBas)
             .ToListAsync();
 
         var simdi = _saat.GetLocalNow().DateTime;
@@ -147,6 +148,7 @@ public class RandevuServisi
         var slotlar = await UygunSlotlariGetirAsync(hizmetId, gun);
         var idler = slotlar.Select(s => s.VeterinerId).Distinct().ToList();
         return await _db.Veterinerler
+            .Include(v => v.Klinik)
             .Include(v => v.Uzmanliklar).ThenInclude(u => u.Uzmanlik)
             .Where(v => idler.Contains(v.Id))
             .ToListAsync();
@@ -168,6 +170,9 @@ public class RandevuServisi
             .FirstOrDefaultAsync(v => v.Id == veterinerId);
         if (hekim == null)
             return IslemSonucu.Hata("Veteriner bulunamadı.");
+
+        if (hekim.KlinikId != hizmet.KlinikId)
+            return IslemSonucu.Hata("Seçilen hekim bu hizmetin verildiği klinikte görev yapmıyor.");
 
         if (!hekim.Hizmetler.Any(h => h.HizmetId == hizmetId))
             return IslemSonucu.Hata("Bu hekim seçilen hizmeti vermiyor.");
@@ -264,7 +269,7 @@ public class RandevuServisi
         var gunSaat = baslangic.TimeOfDay;
         var bitisSaat = bitis.TimeOfDay;
         if (bitis.Date > baslangic.Date)
-            bitisSaat = new TimeSpan(24, 0, 0);
+            bitisSaat = TimeSpan.FromDays(1) + bitis.TimeOfDay;
 
         if (gunSaat < klinikSaat.Acilis || bitisSaat > klinikSaat.Kapanis)
             return IslemSonucu.Hata("Seçilen saat klinik çalışma saatleri dışında.");
@@ -275,16 +280,18 @@ public class RandevuServisi
         if (gunSaat < musait.Baslangic || bitisSaat > musait.Bitis)
             return IslemSonucu.Hata("Seçilen saat hekimin müsaitlik aralığının dışında.");
 
-        var hekimRandevulari = await _db.Randevular
-            .Where(r => r.VeterinerId == hekim.Id && BloklayanDurum(r.Durum))
-            .ToListAsync();
-        if (hekimRandevulari.Any(r => CakisiyorMu(baslangic, bitis, r.Baslangic, r.Bitis)))
+        var hekimCakisiyor = await _db.Randevular.AnyAsync(r =>
+            r.VeterinerId == hekim.Id
+            && (r.Durum == RandevuDurumu.Bekliyor || r.Durum == RandevuDurumu.Onaylandi)
+            && baslangic < r.Bitis && bitis > r.Baslangic);
+        if (hekimCakisiyor)
             return IslemSonucu.Hata("Hekimin bu saatte başka bir randevusu var (süre çakışması).");
 
-        var hayvanRandevulari = await _db.Randevular
-            .Where(r => r.EvcilHayvanId == hayvanId && BloklayanDurum(r.Durum))
-            .ToListAsync();
-        if (hayvanRandevulari.Any(r => CakisiyorMu(baslangic, bitis, r.Baslangic, r.Bitis)))
+        var hayvanCakisiyor = await _db.Randevular.AnyAsync(r =>
+            r.EvcilHayvanId == hayvanId
+            && (r.Durum == RandevuDurumu.Bekliyor || r.Durum == RandevuDurumu.Onaylandi)
+            && baslangic < r.Bitis && bitis > r.Baslangic);
+        if (hayvanCakisiyor)
             return IslemSonucu.Hata("Bu hayvanın aynı saatte başka bir randevusu var.");
 
         return IslemSonucu.Tamam();
